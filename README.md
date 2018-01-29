@@ -45,6 +45,7 @@ This profile determines the runtime, memory and amount of cores as follows:
 * **Memory**: Specify in your rule under `resources` with key `mem_mb`. Can be 
   overridden by specifying a value in your `--cluster-config` file.
 * **Cores/CPUs**: specify using `threads` per rule.
+* **UGER project**: specify in `--cluster-config` file
 
 Additional options
 ------------------
