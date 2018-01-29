@@ -1,0 +1,8 @@
+cluster: "broad-submit.py {dependencies}"
+cluster-status: "broad-status.py"
+jobscript: "broad-jobscript.sh"
+jobs: 1000
+keep-going: true
+immediate-submit: {{ cookiecutter.immediate_submit }}
+notemp: true
+latency-wait: 60
