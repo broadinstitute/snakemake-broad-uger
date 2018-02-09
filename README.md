@@ -10,31 +10,86 @@ snakemake profile to run your workflow on the Broad's UGER cluster.
 Installation
 ------------
 
-Naturally, you'll have to be on the Broad cluster for this to work. The UGER 
-cluster has a dotkit for loading Anaconda3 (`use Anaconda3`), and it even 
-includes snakemake by default. This version of snakemake, however, is quite old 
-(3.x). We'll need a separate conda environment for the new snakemake version.
+### Preparing a conda environment
+
+The recommended way to use this Snakemake profile is to create a separate conda 
+environment for your project. This environment will contain a separate Python 
+installation specifically for your project, where you control which packages 
+are installed. In the example below we will create an environment named 
+`snakemake` (with the `-n` switch), but you can name it anything you want. 
+Furthermore, Snakemake requires Python>=3.5, so we install Python 3 along with 
+two additional packages: Snakemake itself and the package `cookiecutter` (used 
+to install this profile).
+
 
 ```bash
-use Anaconda3
+use .anaconda3-5.0.1
 
 # Create new conda environment with up to date snakemake
-conda create -n snakemake python=3 snakemake cookiecutter
+conda create -n snakemake python=3
 source activate snakemake
+
+pip install snakemake cookiecutter
+
+# (Optional) You can now install additional dependencies specific to your 
+# project
+conda install numpy scipy ...
 ```
 
-Change to your desired directory and install the snakemake profile:
+**NB:** Conda creates the environment by default in your home directory. At 
+Broad, your home directory is limited to 5GB so this may fill up quickly. It's 
+probably a good idea to store the Conda environment in some other place. This 
+can be done by replacing `-n snakemake` with `--prefix 
+/path/where/env/will/be/stored`, and also specify the path to your conda 
+environment when issuing the `source activate` command.
+
+### Install the Snakemake profile
+
+Change to the directory containing your `Snakefile` and issue the following 
+command:
 
 ```bash
 cookiecutter gh:broadinstitute/snakemake-broad-uger
 ```
 
-For explanation of the options see below. To run your workflow with this 
-profile run snakemake as follows:
+This command will ask a few questions: 
+
+1. You can optionally specify a different profile name than the default
+   (`broad-uger`).
+2. Whether to use the `--immediate-submit` option of Snakemake. Currently not 
+   recommended, until [this fix][bug] is included in a release.
+3. Last but not least, specify the name (when using `-n` above) or the path 
+   (when using `--prefix` above) to the conda environment you want to use.
+
+[bug]:https://bitbucket.org/snakemake/snakemake/issues/753/using-immediate-submit-jobscripts-get
+
+
+### Using the Snakemake profile
+
+We're ready to go! To use this profile invoke Snakemake as follows:
 
 ```bash
 snakemake --profile broad-uger ...
 ```
+
+If you're not using `--immediate-submit`, the Snakemake master process must be 
+alive for the whole duration of your workflow (i.e. until all jobs have 
+finished). My recommendation would be to start the Snakemake process on one of 
+the login nodes, in a `screen` session. This makes sure the Snakemake master 
+process doesn't get killed when you lose your SSH connection.
+
+Example:
+
+```bash
+# Start screen session with snakemake in the background
+screen -dmS snakemake snakemake --profile broad-uger ...
+
+# View output:
+screen -x snakemake
+```
+
+The Snakemake master process is light weight so it shouldn't be a problem to 
+run this on the login node.
 
 Resource specification
 ----------------------
@@ -45,26 +100,15 @@ This profile determines the runtime, memory and amount of cores as follows:
 * **Memory**: Specify in your rule under `resources` with key `mem_mb`. Can be 
   overridden by specifying a value in your `--cluster-config` file.
 * **Cores/CPUs**: specify using `threads` per rule.
-* **UGER project**: specify in `--cluster-config` file
+* **UGER project**: specify in `--cluster-config` file with key `project`
 
-Additional options
-------------------
+Read more about:
 
-When creating the profile using cookiecutter, it asks a few questions. You can 
-give a different profile name than the default "broad-uger". Furthermore, it 
-allows you to configure the following things:
+* [Snakemake cluster configuration][snakemake-config]
+* [Specifying threads and other resources][snakemake-resources]
 
-* **immediate_submit**: Use Snakemake's `--immediate-submit` feature. This 
-  means that the Snakemake master process will not wait until jobs are finished 
-  and will submit all tasks directly to the cluster (and specify dependencies 
-  where needed). This is useful if you don't want to run a long running process 
-  on your cluster's head node.
-* **global_conda_env**: We use a special conda environment to be able to use 
-  the most current version of snakemake. You may want to run your workflow in a 
-  different conda environment. By specifying the name of an existing conda 
-  environment (or its path), this conda environment will be activated before 
-  each task is run on a compute node.
-
+[snakemake-config]:http://snakemake.readthedocs.io/en/latest/snakefiles/configuration.html
+[snakemake-resources]:http://snakemake.readthedocs.io/en/latest/snakefiles/rules.html#threads
 
 Acknowledgements
 ----------------
@@ -72,6 +116,4 @@ Acknowledgements
 The cluster submission and jobscripts are partly taken/inspired by the 
 corresponding files in the [broadinstitute/viral-ngs][viral-ngs] repository.
 
-
-[cookiecutter]: https://github.com/audreyr/cookiecutter
 [viral-ngs]: https://github.com/broadinstitute/viral-ngs/tree/master/pipes
