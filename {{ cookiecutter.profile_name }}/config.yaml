@@ -1,8 +1,9 @@
-cluster: "broad-submit.py {dependencies}"
-cluster-status: "broad-status.py"
-jobscript: "broad-jobscript.sh"
+cluster: "{{ cookiecutter.profile_name }}/broad-submit.py {dependencies}"
+cluster-status: "{{ cookiecutter.profile_name }}/broad-status.py"
+jobscript: "{{ cookiecutter.profile_name }}/broad-jobscript.sh"
 jobs: 1000
 keep-going: true
 immediate-submit: {{ cookiecutter.immediate_submit }}
 notemp: true
+local-cores: 1
 latency-wait: 60

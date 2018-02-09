@@ -42,8 +42,11 @@ command = ['qsub', '-terse', '-P', project, '-N', jobname, '-r', 'y', '-cwd']
 
 if "log" in job and len(job['log']) > 0:
     logfile = os.path.splitext(job['log'][0])[0] + "-qsub.log"
-    command.extend(['-o', logfile, '-j', 'y'])
+else:
+    os.makedirs("snakemake-logs", exists_ok=True)
+    logfile = os.path.join("snakemake-logs", jobname + ".log")
 
+command.extend(['-o', logfile, '-j', 'y'])
 
 if threads > 1:
     command.extend(['-pe', 'smp', str(threads), '-binding',

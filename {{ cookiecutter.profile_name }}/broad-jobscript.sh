@@ -4,11 +4,9 @@
 
 source /broad/software/scripts/useuse
 use UGER
+use .anaconda3-5.0.1
 
-{% if cookiecutter.global_conda_env %}
-use Anaconda3
-source activate {{ cookiecutter.global_conda_env }}
-{% endif %}
+source activate {{ cookiecutter.conda_env }}
 
 echo -e "JOB ID\t$JOB_ID"
 echo "=============================="
@@ -37,3 +35,4 @@ else
         exit $EXIT_STATUS
     fi
 fi
+
