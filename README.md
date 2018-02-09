@@ -1,11 +1,13 @@
 Snakemake profile for Broad Institute UGER cluster
 ==================================================
 
-Snakemake is a Pythonic workflow description language, that is easily 
-configurable to run in all sorts of environments. Since version 4.1, snakemake 
-contains a feature called 'profiles', for each exchange of configuration 
-presets for running in a certain environment. This repository contains a 
-snakemake profile to run your workflow on the Broad's UGER cluster.
+[Snakemake][snakemake] is a Pythonic workflow description language, that is 
+easily configurable to run in all sorts of environments. Since version 4.1, 
+Snakemake contains a feature called 'profiles', for easy exchange of 
+configuration presets for running in a certain environment. This repository 
+contains a snakemake profile to run your workflow on the Broad's UGER cluster.
+
+[snakemake]: https://snakemake.readthedocs.io/
 
 Installation
 ------------
