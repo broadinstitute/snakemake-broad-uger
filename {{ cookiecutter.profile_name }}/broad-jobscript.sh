@@ -3,8 +3,8 @@
 # This script gets executed on a compute node on the cluster
 
 source /broad/software/scripts/useuse
-use UGER
-use .anaconda3-5.0.1
+use {{ cookiecutter.cluster_name }}
+use .anaconda3-5.0.3
 
 source activate {{ cookiecutter.conda_env }}
 

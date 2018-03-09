@@ -12,6 +12,9 @@ from snakemake.utils import read_job_properties
 
 __author__ = "Lucas van Dijk <lvandijk@broadinstitute.org>"
 
+# Whether we're on UGER or UGES
+CLUSTER_TYPE = "{{ cookiecutter.cluster_name }}"
+
 dependencies = sys.argv[1:-1]
 jobscript = sys.argv[-1]
 
@@ -34,11 +37,18 @@ jobname = "{rule}-{jobid}".format(rule=job['rule'], jobid=sm_jobid)
 mem_mb = cluster_conf.get('mem_mb', job_resources.get('mem_mb', None))
 threads = job.get('threads', 1)
 project = cluster_conf.get('project', 'broad')
+queue = cluster_conf.get('queue', '')
 runtime = cluster_conf.get('runtime', "")
 
 # -terse flag makes sure qsub only outputs job ID to stdout
 # -r signals that jobs may be restarted in cases of *cluster* crashes
-command = ['qsub', '-terse', '-P', project, '-N', jobname, '-r', 'y', '-cwd']
+command = ['qsub', '-terse', '-N', jobname, '-r', 'y', '-cwd']
+
+# Add project or queue
+if CLUSTER_TYPE == "UGER":
+    command.extend(['-P', project])
+elif CLUSTER_TYPE == "UGES":
+    command.extend(['-q', queue])
 
 if "log" in job and len(job['log']) > 0:
     logfile = os.path.splitext(job['log'][0])[0] + "-qsub.log"
