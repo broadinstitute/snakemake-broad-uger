@@ -58,7 +58,7 @@ This command will ask a few questions:
 
 1. You can optionally specify a different profile name than the default
    (`broad-uger`).
-2. Which cluster to use, both UGER and UGES is supported.
+2. Which cluster to use, both UGER and UGES are supported.
 3. Whether to use the `--immediate-submit` option of Snakemake. With this option
    snakemake will submit every job immediately to the cluster, configuring
    which job depends on which (using `-hold_jid` option of `qsub`), and exit
