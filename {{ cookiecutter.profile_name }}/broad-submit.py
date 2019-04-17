@@ -7,6 +7,7 @@ import os
 import re
 import sys
 import subprocess
+from datetime import datetime
 
 from snakemake.utils import read_job_properties
 
@@ -53,8 +54,11 @@ elif CLUSTER_TYPE == "UGES":
 if "log" in job and len(job['log']) > 0:
     logfile = os.path.splitext(job['log'][0])[0] + "-qsub.log"
 else:
-    os.makedirs("snakemake-logs", exists_ok=True)
-    logfile = os.path.join("snakemake-logs", jobname + ".log")
+    path = f"snakemake-logs/{job['rule']}/"
+    os.makedirs(path, exist_ok=True)
+
+    logfile = (path + datetime.now().strftime('%Y%m%d-%H%M%S') +
+               f"-jobid{sm_jobid}.log")
 
 command.extend(['-o', logfile, '-j', 'y'])
 
