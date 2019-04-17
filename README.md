@@ -25,10 +25,10 @@ to install this profile).
 
 
 ```bash
-use .anaconda3-5.0.1
+use Anaconda3
 
 # Create new conda environment with up to date snakemake
-conda create -n snakemake python=3
+conda create -n snakemake "python>=3.6"
 source activate snakemake
 
 pip install snakemake cookiecutter
@@ -58,13 +58,13 @@ This command will ask a few questions:
 
 1. You can optionally specify a different profile name than the default
    (`broad-uger`).
-2. Whether to use the `--immediate-submit` option of Snakemake. Currently not 
-   recommended, until [this fix][bug] is included in a release.
+2. Whether to use the `--immediate-submit` option of Snakemake. With this option
+   snakemake will submit every job immediately to the cluster, configuring
+   which job depends on which (using `-hold_jid` option of `qsub`), and exit
+   immediately afterwards. Not recommended, it's better to just run the 
+   snakemake master process on the cluster login node.
 3. Last but not least, specify the name (when using `-n` above) or the path 
    (when using `--prefix` above) to the conda environment you want to use.
-
-[bug]:https://bitbucket.org/snakemake/snakemake/issues/753/using-immediate-submit-jobscripts-get
-
 
 ### Using the Snakemake profile
 
